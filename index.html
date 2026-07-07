@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>NoDataAI · Smart Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: #eef1f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 16px;
+            transition: background 0.5s ease;
+        }
+
+        body.dark {
+            background: #0d111f;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 1100px;
+            height: 90vh;
+            max-height: 800px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        body.dark .app {
+            background: #161c2e;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #f8f9fb;
+            border-right: 1px solid #eaeef2;
+            padding: 20px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: background 0.3s;
+        }
+
+        body.dark .sidebar {
+            background: #1a2238;
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eaeef2;
+            margin-bottom: 10px;
+        }
+
+        body.dark .sidebar .logo {
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .sidebar .logo .icon {
+            width: 36px;
+            height: 36px;
+            background: #4a6cf7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .sidebar .logo h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1e2b;
+        }
+
+        body.dark .sidebar .logo h2 {
+            color: #edf2fa;
+        }
+
+        .sidebar .logo h2 small {
+            font-size: 11px;
+            font-weight: 400;
+            color: #8e96ab;
+            display: block;
+        }
+
+        .new-chat-btn {
+            background: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .new-chat-btn:hover {
+            background: #3a5cd9;
+            transform: scale(0.98);
+        }
+
+        .sidebar .section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8e96ab;
+            padding: 6px 4px 4px;
+        }
+
+        .chat-list-item {
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #3d4559;
+            border: 1px solid transparent;
+        }
+
+        body.dark .chat-list-item {
+            color: #99a8c9;
+        }
+
+        .chat-list-item:hover {
+            background: rgba(74,108,247,0.06);
+            border-color: rgba(74,108,247,0.1);
+        }
+
+        .chat-list-item.active {
+            background: rgba(74,108,247,0.08);
+            border-color: #4a6cf7;
+            color: #4a6cf7;
+        }
+
+        .chat-list-item .trash {
+            margin-left: auto;
+            opacity: 0;
+            transition: 0.15s;
+            color: #e74c6f;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 12px;
+            padding: 2px 4px;
+        }
+
+        .chat-list-item:hover .trash {
+            opacity: 0.5;
+        }
+        .chat-list-item .trash:hover {
+            opacity: 1;
+        }
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            min-width: 0;
+        }
+
+        body.dark .main-chat {
+            background: #161c2e;
+        }
+
+        .chat-header {
+            padding: 14px 24px;
+            border-bottom: 1px solid #eaeef2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        body.dark .chat-header {
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .chat-header .title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #1a1e2b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.dark .chat-header .title {
+            color: #edf2fa;
+        }
+
+        .chat-header .title .status {
+            font-size: 11px;
+            font-weight: 400;
+            color: #8e96ab;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 2px;
+        }
+
+        .chat-header-actions button {
+            background: transparent;
+            border: none;
+            color: #8e96ab;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: 15px;
+        }
+
+        .chat-header-actions button:hover {
+            background: rgba(0,0,0,0.04);
+            color: #1a1e2b;
+        }
+
+        body.dark .chat-header-actions button:hover {
+            background: rgba(255,255,255,0.05);
+            color: #edf2fa;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .messages::-webkit-scrollbar-thumb {
+            background: #4a6cf7;
+            border-radius: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #8e96ab;
+            padding: 60px 20px;
+        }
+
+        .empty-state .icon-wrapper {
+            font-size: 40px;
+            color: #4a6cf7;
+            opacity: 0.3;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #3d4559;
+            margin-bottom: 4px;
+        }
+
+        body.dark .empty-state h3 {
+            color: #edf2fa;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 14px;
+            animation: slideIn 0.25s ease;
+            word-break: break-word;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: #4a6cf7;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-ai {
+            align-self: flex-start;
+            background: #f0f2f5;
+            color: #1a1e2b;
+            border-bottom-left-radius: 4px;
+        }
+
+        body.dark .msg-ai {
+            background: #1a2238;
+            color: #edf2fa;
+        }
+
+        .msg .time {
+            font-size: 9px;
+            opacity: 0.4;
+            margin-top: 4px;
+            display: block;
+            text-align: right;
+        }
+
+        .msg-user .time {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .msg-ai .wiki-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #4a6cf7;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .msg-ai .wiki-link:hover {
+            text-decoration: underline;
+        }
+
+        .msg-ai .wiki-image {
+            max-width: 100%;
+            max-height: 160px;
+            border-radius: 8px;
+            margin-top: 8px;
+            display: block;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .code-block {
+            margin: 8px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #1a1e2b;
+        }
+
+        body.dark .code-block {
+            background: #0d111f;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .code-header .lang {
+            font-size: 10px;
+            color: #8e96ab;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .code-header .copy-code-btn {
+            background: rgba(255,255,255,0.06);
+            border: none;
+            color: #8e96ab;
+            padding: 2px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 10px;
+            transition: 0.15s;
+        }
+
+        .code-header .copy-code-btn:hover {
+            background: rgba(255,255,255,0.12);
+            color: white;
+        }
+
+        .code-block pre {
+            margin: 0;
+            padding: 12px 14px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #e6edf3;
+        }
+
+        .code-block pre code {
+            font-family: 'Courier New', monospace;
+            color: #e6edf3;
+        }
+
+        .msg-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .msg-actions button {
+            background: rgba(0,0,0,0.04);
+            border: none;
+            color: #8e96ab;
+            padding: 2px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .msg-actions button:hover {
+            background: rgba(74,108,247,0.08);
+            color: #4a6cf7;
+        }
+
+        body.dark .msg-actions button {
+            background: rgba(255,255,255,0.04);
+            color: #99a8c9;
+        }
+
+        body.dark .msg-actions button:hover {
+            background: rgba(74,108,247,0.12);
+            color: #7a94ff;
+        }
+
+        .typing {
+            align-self: flex-start;
+            background: #f0f2f5;
+            padding: 10px 18px;
+            border-radius: 16px;
+            display: flex;
+            gap: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        body.dark .typing {
+            background: #1a2238;
+        }
+
+        .typing span {
+            width: 6px;
+            height: 6px;
+            background: #8e96ab;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
+        .quick-replies {
+            display: flex;
+            gap: 6px;
+            padding: 4px 24px 8px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .quick-reply {
+            background: transparent;
+            border: 1px solid #eaeef2;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #6b7b9e;
+        }
+
+        body.dark .quick-reply {
+            border-color: rgba(255,255,255,0.08);
+            color: #99a8c9;
+        }
+
+        .quick-reply:hover {
+            background: #4a6cf7;
+            color: white;
+            border-color: #4a6cf7;
+        }
+
+        .input-bar {
+            padding: 10px 24px 16px;
+            border-top: 1px solid #eaeef2;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-shrink: 0;
+            background: #ffffff;
+        }
+
+        body.dark .input-bar {
+            background: #161c2e;
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .input-wrapper {
+            flex: 1;
+            background: #f7f8fa;
+            border-radius: 20px;
+            border: 1px solid #eaeef2;
+            display: flex;
+            align-items: flex-end;
+            padding: 2px 4px 2px 16px;
+            transition: 0.15s;
+        }
+
+        body.dark .input-wrapper {
+            background: #1a2238;
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 2px rgba(74,108,247,0.06);
+        }
+
+        .input-wrapper textarea {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            resize: none;
+            font-size: 14px;
+            outline: none;
+            color: #1a1e2b;
+            min-height: 36px;
+            max-height: 100px;
+            line-height: 1.4;
+        }
+
+        body.dark .input-wrapper textarea {
+            color: #edf2fa;
+        }
+
+        .input-wrapper textarea::placeholder {
+            color: #8e96ab;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            padding-right: 2px;
+        }
+
+        .input-actions button {
+            background: transparent;
+            border: none;
+            color: #8e96ab;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-actions button:hover {
+            background: rgba(0,0,0,0.04);
+            color: #1a1e2b;
+        }
+
+        body.dark .input-actions button:hover {
+            background: rgba(255,255,255,0.05);
+            color: #edf2fa;
+        }
+
+        .input-actions .send-btn {
+            background: #4a6cf7;
+            color: white;
+            width: 38px;
+            height: 38px;
+        }
+
+        .input-actions .send-btn:hover {
+            background: #3a5cd9;
+            transform: scale(0.94);
+        }
+
+        .settings-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            border-radius: 24px;
+        }
+
+        .settings-overlay.open {
+            display: flex;
+        }
+
+        .settings-card {
+            background: #ffffff;
+            max-width: 400px;
+            width: 90%;
+            padding: 28px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        body.dark .settings-card {
+            background: #1a2238;
+            color: #edf2fa;
+        }
+
+        .settings-card h3 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .setting-row label {
+            font-weight: 500;
+            font-size: 13px;
+            color: #5b6378;
+        }
+
+        body.dark .setting-row label {
+            color: #99a8c9;
+        }
+
+        .setting-row select,
+        .setting-row input[type="color"] {
+            background: #f7f8fa;
+            border: 1px solid #eaeef2;
+            border-radius: 16px;
+            padding: 6px 14px;
+            color: #1a1e2b;
+            font-size: 13px;
+        }
+
+        body.dark .setting-row select,
+        body.dark .setting-row input[type="color"] {
+            background: #0d111f;
+            border-color: rgba(255,255,255,0.06);
+            color: #edf2fa;
+        }
+
+        .btn-danger {
+            background: #e74c6f;
+            color: white;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .btn-danger:hover {
+            background: #d43f62;
+        }
+
+        .btn-secondary {
+            background: #f0f2f5;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            color: #1a1e2b;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        body.dark .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: #edf2fa;
+        }
+
+        .btn-secondary:hover {
+            background: #eaeef2;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1e2b;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 13px;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        body.dark .toast {
+            background: #edf2fa;
+            color: #1a1e2b;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .app {
+                height: 96vh;
+                max-height: none;
+                border-radius: 16px;
+            }
+            .msg {
+                max-width: 92%;
+            }
+            .messages {
+                padding: 14px 14px 8px;
+            }
+            .quick-replies {
+                padding: 4px 14px 8px;
+            }
+            .input-bar {
+                padding: 8px 14px 14px;
+            }
+            .chat-header {
+                padding: 12px 16px;
+            }
+            .chat-header .title {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            .msg {
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+            .quick-reply {
+                font-size: 11px;
+                padding: 3px 10px;
+            }
+            .empty-state h3 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="sidebar">
+            <div class="logo">
+                <div class="icon">∅</div>
+                <h2>NoDataAI <small>Smart Search</small></h2>
+            </div>
+            <button class="new-chat-btn" id="newChatBtn">
+                <i class="fas fa-plus"></i> New Chat
+            </button>
+            <div class="section-title">Recent</div>
+            <div id="chatList"></div>
+        </div>
+
+        <div class="main-chat">
+            <div class="chat-header">
+                <div class="title">
+                    <i class="fas fa-comment" style="color:#4a6cf7;font-size:14px;"></i>
+                    <span id="chatTitle">Start chatting</span>
+                    <span class="status">· online</span>
+                </div>
+                <div class="chat-header-actions">
+                    <button id="voiceBtn" title="Voice"><i class="fas fa-microphone"></i></button>
+                    <button id="settingsToggle" title="Settings"><i class="fas fa-sliders-h"></i></button>
+                </div>
+            </div>
+
+            <div class="messages" id="messages"></div>
+
+            <div class="quick-replies" id="quickReplies"></div>
+
+            <div class="input-bar">
+                <div class="input-wrapper">
+                    <textarea id="userInput" rows="1" placeholder="Ask anything..."></textarea>
+                    <div class="input-actions">
+                        <button id="sendBtn" class="send-btn"><i class="fas fa-arrow-up"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-overlay" id="settingsOverlay">
+            <div class="settings-card">
+                <h3>Settings</h3>
+                <div class="setting-row">
+                    <label>Theme</label>
+                    <select id="themeSelect">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <label>Accent</label>
+                    <input type="color" id="accentPicker" value="#4a6cf7">
+                </div>
+                <div class="setting-row">
+                    <label>Personality</label>
+                    <select id="personalitySelect">
+                        <option value="friendly">Friendly</option>
+                        <option value="technical">Technical</option>
+                        <option value="creative">Creative</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <button class="btn-danger" id="clearChatBtn">Clear Current</button>
+                </div>
+                <div class="setting-row">
+                    <button class="btn-danger" id="clearAllChatsBtn" style="background:#c0392b;">Clear All</button>
+                </div>
+                <div class="setting-row">
+                    <button class="btn-secondary" id="closeSettings">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        // ============================================================
+        // SMART AI ENGINE - Clean Wikipedia Search
+        // ============================================================
+        class AIEngine {
+            constructor() {
+                this.personality = 'friendly';
+                this.context = [];
+                this.greetings = [
+                    'Hello! How can I help you today?',
+                    'Hi there! What would you like to know?',
+                    'Hey! I\'m ready to help with any questions.',
+                    'Greetings! How can I assist you?'
+                ];
+                this.farewells = [
+                    'Goodbye! Feel free to come back anytime.',
+                    'See you later! Take care.',
+                    'Until next time!'
+                ];
+                this.thanks = [
+                    'You\'re welcome!',
+                    'Happy to help!',
+                    'Anytime!'
+                ];
+            }
+
+            async process(input) {
+                const lower = input.toLowerCase().trim();
+                
+                // Store context
+                this.context.push(input);
+                if (this.context.length > 10) this.context.shift();
+
+                // About NoDataAI - keep this one
+                if (lower.includes('who made you') || lower.includes('who created you') || lower.includes('who built you')) {
+                    return { 
+                        reply: "NoDataAI was created by a small independent team focused on privacy and data protection. The AI uses Wikipedia and DuckDuckGo search to provide accurate information without collecting or storing your personal data. All conversations stay on your device.",
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+                
+                if (lower.includes('why is the name') || lower.includes('why are you called') || lower.includes('nodataai name') || lower.includes('meaning of name') || lower.includes('why nodataai')) {
+                    return { 
+                        reply: "The name NoDataAI reflects our core mission: we do not collect, store, or sell your personal data. Your conversations remain private and local on your device. Privacy isn't just a feature - it's the foundation of everything we do.",
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                // Greetings
+                if (lower.match(/^(hello|hi|hey|howdy|greetings|good morning|good evening|good afternoon|yo|sup|what's up)/)) {
+                    return { 
+                        reply: this.greetings[Math.floor(Math.random() * this.greetings.length)],
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                // Farewells
+                if (lower.match(/^(bye|goodbye|cya|see you|see ya|later|peace|adios)/)) {
+                    return { 
+                        reply: this.farewells[Math.floor(Math.random() * this.farewells.length)],
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                // Thanks
+                if (lower.match(/thank|thanks|appreciate|thx|ty/)) {
+                    return { 
+                        reply: this.thanks[Math.floor(Math.random() * this.thanks.length)],
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                // Weather
+                if (lower.includes('weather') || lower.includes('temperature') || lower.includes('forecast')) {
+                    return { 
+                        reply: "Weather data requires internet access and is not available in offline mode. For current weather conditions, please check a weather service or enable internet access.",
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                // Time
+                if (lower.includes('time') || lower.includes('date') || lower.includes('what day')) {
+                    const now = new Date();
+                    return { 
+                        reply: now.toLocaleString('en-US', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }),
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                // Calculations
+                if (lower.match(/[0-9\+\-\*\/\(\)]/) || lower.includes('calc') || lower.includes('calculate')) {
+                    try {
+                        let expr = input.replace(/calc|calculate|math|what is|equals|=/gi, '').trim();
+                        expr = expr.replace(/plus/g, '+')
+                                   .replace(/minus/g, '-')
+                                   .replace(/times/g, '*')
+                                   .replace(/divided by/g, '/')
+                                   .replace(/x/g, '*')
+                                   .replace(/÷/g, '/')
+                                   .replace(/−/g, '-');
+                        
+                        if (!/^[\d+\-*/().\s]+$/.test(expr)) {
+                            throw new Error('Invalid expression');
+                        }
+                        
+                        const result = Function('"use strict"; return (' + expr + ')')();
+                        return { 
+                            reply: `${expr} = ${result}`,
+                            image: null, 
+                            link: null, 
+                            code: null 
+                        };
+                    } catch(e) {
+                        return { 
+                            reply: "I couldn't calculate that. Try something like '2 + 2' or '10 * 5'",
+                            image: null, 
+                            link: null, 
+                            code: null 
+                        };
+                    }
+                }
+
+                // Code requests
+                if (lower.includes('code') || lower.includes('script') || lower.includes('example') || 
+                    lower.includes('python') || lower.includes('lua') || lower.includes('javascript') ||
+                    lower.includes('function') || lower.includes('how to') || lower.includes('programming') ||
+                    lower.includes('syntax') || lower.includes('write a')) {
+                    const codeResult = this.getCodeExample(input);
+                    if (codeResult) {
+                        return { 
+                            reply: codeResult.explanation, 
+                            image: null, 
+                            link: null, 
+                            code: codeResult.code 
+                        };
+                    }
+                }
+
+                // Extract the main topic from the question
+                const topic = this.extractTopic(input);
+                if (!topic) {
+                    return { 
+                        reply: "I couldn't understand what you're asking. Could you rephrase your question?",
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                // Search Wikipedia
+                const wikiResult = await this.searchWikipedia(topic);
+                if (wikiResult && wikiResult.summary && wikiResult.summary.length > 20) {
+                    // Verify the result matches the query
+                    const isRelevant = this.isResultRelevant(topic, wikiResult.title, wikiResult.summary);
+                    if (isRelevant) {
+                        return { 
+                            reply: wikiResult.summary, 
+                            image: wikiResult.image, 
+                            link: wikiResult.link, 
+                            code: null 
+                        };
+                    }
+                }
+
+                // Try DuckDuckGo
+                const ddgResult = await this.searchDuckDuckGo(topic);
+                if (ddgResult && ddgResult.length > 20) {
+                    return { 
+                        reply: ddgResult, 
+                        image: null, 
+                        link: null, 
+                        code: null 
+                    };
+                }
+
+                return { 
+                    reply: "I couldn't find reliable information about that. Try being more specific or rephrasing your question.",
+                    image: null, 
+                    link: null, 
+                    code: null 
+                };
+            }
+
+            extractTopic(query) {
+                // Remove common question starters
+                let topic = query
+                    .replace(/^what is\s+|^who is\s+|^what are\s+|^who are\s+|^what does\s+|^where is\s+|^when is\s+|^how to\s+|^how do\s+|^define\s+|^tell me about\s+|^information about\s+|^can you tell me about\s+/gi, '')
+                    .replace(/[?,.]/g, '')
+                    .trim();
+                
+                // If the topic is too short or empty, use the original query
+                if (!topic || topic.length < 2) {
+                    topic = query.replace(/[?,.]/g, '').trim();
+                }
+                
+                return topic;
+            }
+
+            isResultRelevant(query, title, summary) {
+                // Check if the title or summary contains the query or related terms
+                const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 3);
+                const titleLower = title.toLowerCase();
+                const summaryLower = summary.toLowerCase();
+                
+                // Check if any significant word from the query appears in the title
+                for (const word of queryWords) {
+                    if (titleLower.includes(word)) {
+                        return true;
+                    }
+                }
+                
+                // Check if the summary mentions the query
+                for (const word of queryWords) {
+                    if (summaryLower.includes(word)) {
+                        return true;
+                    }
+                }
+                
+                // If the title is very similar to the query, it's relevant
+                const titleWords = titleLower.split(' ');
+                let matchCount = 0;
+                for (const word of queryWords) {
+                    if (titleWords.some(tw => tw.includes(word) || word.includes(tw))) {
+                        matchCount++;
+                    }
+                }
+                
+                return matchCount >= Math.min(2, queryWords.length);
+            }
+
+            getCodeExample(query) {
+                const lower = query.toLowerCase();
+                let code = null;
+                let explanation = '';
+
+                if (lower.includes('lua') || lower.includes('roblox')) {
+                    code = `-- Roblox Lua Script Example
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Create a tool
+local tool = Instance.new("Tool")
+tool.Name = "MyTool"
+tool.RequiresHandle = true
+
+-- Tool activation
+tool.Activated:Connect(function()
+    print("Tool used!")
+end)
+
+-- Equip the tool
+tool.Parent = player.Backpack`;
+                    explanation = 'Lua script for Roblox:';
+                } else if (lower.includes('python')) {
+                    code = `# Python Example
+def hello_world():
+    print("Hello, World!")
+
+def add_numbers(a, b):
+    return a + b
+
+# Main execution
+if __name__ == "__main__":
+    hello_world()
+    result = add_numbers(5, 3)
+    print(f"Sum: {result}")`;
+                    explanation = 'Python code example:';
+                } else if (lower.includes('javascript') || lower.includes('js')) {
+                    code = `// JavaScript Example
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network error');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+        return null;
+    }
+}
+
+// Usage
+fetchData('https://api.example.com/data')
+    .then(data => console.log(data));`;
+                    explanation = 'JavaScript example:';
+                } else {
+                    code = `# Generic Example
+def main():
+    print("Hello, World!")
+    return 0
+
+if __name__ == "__main__":
+    main()`;
+                    explanation = 'Code example:';
+                }
+
+                return { explanation, code };
+            }
+
+            async searchWikipedia(query) {
+                try {
+                    // Clean the query
+                    let cleanQuery = query.trim();
+                    
+                    // Try direct page first
+                    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanQuery)}`;
+                    const response = await fetch(url);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data && data.extract && data.extract.length > 20) {
+                            let summary = data.extract;
+                            if (summary.length > 600) summary = summary.substring(0, 600) + '...';
+                            return {
+                                summary: summary,
+                                image: data.thumbnail ? data.thumbnail.source : null,
+                                link: `https://en.wikipedia.org/wiki/${encodeURIComponent(data.title || cleanQuery)}`,
+                                title: data.title || cleanQuery
+                            };
+                        }
+                    }
+
+                    // Try search
+                    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*`;
+                    const searchResponse = await fetch(searchUrl);
+                    const searchData = await searchResponse.json();
+                    
+                    if (searchData.query && searchData.query.search && searchData.query.search.length > 0) {
+                        // Sort by relevance (higher score first)
+                        const sortedResults = searchData.query.search.sort((a, b) => b.score - a.score);
+                        
+                        // Filter out disambiguation pages
+                        const filteredResults = sortedResults.filter(r => 
+                            !r.snippet.includes('may refer to') && 
+                            !r.title.includes('disambiguation') &&
+                            !r.title.includes('(disambiguation)')
+                        );
+                        
+                        const bestResult = filteredResults.length > 0 ? filteredResults[0] : sortedResults[0];
+                        if (bestResult && bestResult.title) {
+                            const detailUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(bestResult.title)}`;
+                            const detailResponse = await fetch(detailUrl);
+                            if (detailResponse.ok) {
+                                const data = await detailResponse.json();
+                                if (data && data.extract && data.extract.length > 20) {
+                                    let summary = data.extract;
+                                    if (summary.length > 600) summary = summary.substring(0, 600) + '...';
+                                    return {
+                                        summary: summary,
+                                        image: data.thumbnail ? data.thumbnail.source : null,
+                                        link: `https://en.wikipedia.org/wiki/${encodeURIComponent(data.title || bestResult.title)}`,
+                                        title: data.title || bestResult.title
+                                    };
+                                }
+                            }
+                            
+                            // Fallback to snippet
+                            let snippet = bestResult.snippet.replace(/<[^>]*>/g, '').trim();
+                            if (snippet.length > 20) {
+                                return {
+                                    summary: snippet + '...',
+                                    image: null,
+                                    link: `https://en.wikipedia.org/wiki/${encodeURIComponent(bestResult.title)}`,
+                                    title: bestResult.title
+                                };
+                            }
+                        }
+                    }
+                    
+                    return null;
+                } catch (error) {
+                    console.error('Wikipedia search error:', error);
+                    return null;
+                }
+            }
+
+            async searchDuckDuckGo(query) {
+                try {
+                    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data && data.AbstractText && data.AbstractText.length > 20) {
+                        let text = data.AbstractText;
+                        if (text.length > 600) text = text.substring(0, 600) + '...';
+                        return text;
+                    }
+                    
+                    if (data && data.RelatedTopics && data.RelatedTopics.length > 0) {
+                        for (const topic of data.RelatedTopics) {
+                            if (topic.Text && topic.Text.length > 20) {
+                                let text = topic.Text.replace(/<[^>]*>/g, '').trim();
+                                if (text.length > 600) text = text.substring(0, 600) + '...';
+                                return text;
+                            }
+                        }
+                    }
+                    
+                    return null;
+                } catch (error) {
+                    console.error('DuckDuckGo search error:', error);
+                    return null;
+                }
+            }
+
+            setPersonality(p) { this.personality = p; }
+        }
+
+        // ============================================================
+        // APP CONTROLLER
+        // ============================================================
+        const ai = new AIEngine();
+
+        const messagesEl = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        const closeSettings = document.getElementById('closeSettings');
+        const themeSelect = document.getElementById('themeSelect');
+        const accentPicker = document.getElementById('accentPicker');
+        const personalitySelect = document.getElementById('personalitySelect');
+        const clearChatBtn = document.getElementById('clearChatBtn');
+        const clearAllChatsBtn = document.getElementById('clearAllChatsBtn');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const chatList = document.getElementById('chatList');
+        const chatTitle = document.getElementById('chatTitle');
+        const toast = document.getElementById('toast');
+        const quickReplies = document.getElementById('quickReplies');
+
+        let messages = JSON.parse(localStorage.getItem('nodata_messages')) || [];
+        let chats = JSON.parse(localStorage.getItem('nodata_chats')) || [];
+        let currentChatId = localStorage.getItem('nodata_currentChat') || Date.now().toString();
+        let isTyping = false;
+        let currentSpeech = null;
+
+        function saveState() {
+            localStorage.setItem('nodata_messages', JSON.stringify(messages));
+            localStorage.setItem('nodata_chats', JSON.stringify(chats));
+            localStorage.setItem('nodata_currentChat', currentChatId);
+        }
+
+        function loadChat(id) {
+            const chat = chats.find(c => c.id === id);
+            if (chat) {
+                currentChatId = id;
+                messages = chat.messages || [];
+                chatTitle.textContent = chat.title || 'Chat';
+                renderMessages();
+                saveState();
+                renderChatList();
+            }
+        }
+
+        function newChat() {
+            currentChatId = Date.now().toString();
+            messages = [];
+            chatTitle.textContent = 'New chat';
+            renderMessages();
+            saveState();
+            renderChatList();
+        }
+
+        function deleteChat(id) {
+            chats = chats.filter(c => c.id !== id);
+            if (id === currentChatId) newChat();
+            else renderChatList();
+            saveState();
+            toastMessage('Chat deleted');
+        }
+
+        function clearCurrentChat() {
+            messages = [];
+            const existing = chats.find(c => c.id === currentChatId);
+            if (existing) existing.messages = [];
+            saveState();
+            renderMessages();
+            toastMessage('Chat cleared');
+        }
+
+        function clearAllChats() {
+            if (confirm('Delete all chats and messages?')) {
+                messages = [];
+                chats = [];
+                currentChatId = Date.now().toString();
+                saveState();
+                renderMessages();
+                renderChatList();
+                chatTitle.textContent = 'New chat';
+                toastMessage('All chats cleared');
+            }
+        }
+
+        function renderChatList() {
+            chatList.innerHTML = '';
+            if (chats.length === 0) {
+                chatList.innerHTML = `<div style="color:#8e96ab;font-size:12px;padding:10px;text-align:center;">No chats yet</div>`;
+                return;
+            }
+            chats.slice(0, 15).forEach(chat => {
+                const div = document.createElement('div');
+                div.className = 'chat-list-item' + (chat.id === currentChatId ? ' active' : '');
+                div.innerHTML = `
+                    <i class="fas fa-comment" style="font-size:11px;"></i>
+                    <span>${chat.title || 'Untitled'}</span>
+                    <button class="trash" data-id="${chat.id}"><i class="fas fa-trash-alt"></i></button>
+                `;
+                div.addEventListener('click', () => loadChat(chat.id));
+                div.querySelector('.trash').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteChat(chat.id);
+                });
+                chatList.appendChild(div);
+            });
+        }
+
+        function renderCodeBlock(code) {
+            const container = document.createElement('div');
+            container.className = 'code-block';
+            
+            const header = document.createElement('div');
+            header.className = 'code-header';
+            header.innerHTML = `
+                <span class="lang">code</span>
+                <button class="copy-code-btn"><i class="fas fa-copy"></i> Copy</button>
+            `;
+            
+            const pre = document.createElement('pre');
+            const codeEl = document.createElement('code');
+            codeEl.textContent = code;
+            pre.appendChild(codeEl);
+            
+            container.appendChild(header);
+            container.appendChild(pre);
+            
+            header.querySelector('.copy-code-btn').addEventListener('click', function() {
+                navigator.clipboard.writeText(code).then(() => {
+                    toastMessage('Code copied!');
+                });
+            });
+            
+            return container;
+        }
+
+        function renderMessages() {
+            messagesEl.innerHTML = '';
+            if (messages.length === 0) {
+                messagesEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon-wrapper"><i class="fas fa-search"></i></div>
+                        <h3>Ask me anything</h3>
+                        <p>Wikipedia search · privacy first</p>
+                    </div>
+                `;
+            } else {
+                messages.forEach((msg, index) => {
+                    const div = document.createElement('div');
+                    div.className = `msg msg-${msg.role}`;
+                    
+                    let content = msg.text;
+                    
+                    if (msg.code) {
+                        const codeContainer = renderCodeBlock(msg.code);
+                        content += codeContainer.outerHTML;
+                    }
+                    
+                    if (msg.image) {
+                        content += `<img src="${msg.image}" class="wiki-image" onerror="this.style.display='none'">`;
+                    }
+                    if (msg.link) {
+                        content += `<a href="${msg.link}" target="_blank" class="wiki-link">Read more on Wikipedia →</a>`;
+                    }
+                    content += `<span class="time">${msg.time || new Date().toLocaleTimeString()}</span>`;
+                    
+                    div.innerHTML = content;
+                    
+                    if (msg.role === 'ai') {
+                        const actions = document.createElement('div');
+                        actions.className = 'msg-actions';
+                        actions.innerHTML = `
+                            <button class="speak-btn" data-index="${index}"><i class="fas fa-volume-up"></i> Speak</button>
+                            <button class="copy-btn" data-text="${msg.text}"><i class="fas fa-copy"></i> Copy</button>
+                        `;
+                        div.appendChild(actions);
+                    }
+                    
+                    messagesEl.appendChild(div);
+                });
+            }
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            updateQuickReplies();
+            
+            document.querySelectorAll('.speak-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const msg = messages[parseInt(this.dataset.index)];
+                    if (msg) speakText(msg.text, this);
+                });
+            });
+            
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    navigator.clipboard.writeText(this.dataset.text).then(() => {
+                        toastMessage('Copied!');
+                    });
+                });
+            });
+        }
+
+        function addMessage(role, text, image = null, link = null, code = null) {
+            const time = new Date().toLocaleTimeString();
+            messages.push({ role, text, time, image, link, code });
+            
+            const existing = chats.find(c => c.id === currentChatId);
+            if (existing) {
+                existing.messages = messages;
+                if (messages.length === 2) {
+                    existing.title = text.slice(0, 25) + (text.length > 25 ? '…' : '');
+                    chatTitle.textContent = existing.title;
+                }
+            } else {
+                chats.unshift({
+                    id: currentChatId,
+                    title: messages.length === 1 ? 'New chat' : text.slice(0, 25) + (text.length > 25 ? '…' : ''),
+                    messages: messages,
+                    updated: new Date().toISOString()
+                });
+                if (messages.length === 1) chatTitle.textContent = 'New chat';
+            }
+            saveState();
+            renderMessages();
+            renderChatList();
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            addMessage('user', text);
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            await getAIResponse(text);
+        }
+
+        async function getAIResponse(input) {
+            if (isTyping) return;
+            isTyping = true;
+            
+            const typing = document.createElement('div');
+            typing.className = 'typing';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            messagesEl.appendChild(typing);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            try {
+                const result = await ai.process(input);
+                typing.remove();
+                addMessage('ai', result.reply, result.image || null, result.link || null, result.code || null);
+            } catch (error) {
+                typing.remove();
+                addMessage('ai', 'Sorry, I encountered an error. Please try again.');
+                console.error('AI Error:', error);
+            }
+            
+            isTyping = false;
+        }
+
+        function speakText(text, button) {
+            if ('speechSynthesis' in window) {
+                if (currentSpeech) {
+                    window.speechSynthesis.cancel();
+                    currentSpeech = null;
+                    document.querySelectorAll('.speak-btn').forEach(b => b.classList.remove('active'));
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.onstart = () => { if (button) button.classList.add('active'); };
+                utterance.onend = () => { if (button) button.classList.remove('active'); currentSpeech = null; };
+                utterance.onerror = () => { if (button) button.classList.remove('active'); currentSpeech = null; };
+                
+                currentSpeech = utterance;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                toastMessage('Text-to-speech not supported');
+            }
+        }
+
+        function updateQuickReplies() {
+            const suggestions = ['Hello', 'What is AI?', 'Python example', 'Lua script', 'Weather', 'Time', '15 + 27', 'Who made you?', 'Why NoDataAI?'];
+            quickReplies.innerHTML = suggestions.map(s =>
+                `<span class="quick-reply" data-text="${s}">${s}</span>`
+            ).join('');
+            document.querySelectorAll('.quick-reply').forEach(el => {
+                el.addEventListener('click', () => {
+                    userInput.value = el.dataset.text;
+                    sendMessage();
+                });
+            });
+        }
+
+        function toastMessage(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Voice
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            let recording = false;
+
+            voiceBtn.addEventListener('mousedown', () => {
+                recording = true;
+                recognition.start();
+                voiceBtn.style.color = '#e74c6f';
+            });
+
+            voiceBtn.addEventListener('mouseup', () => {
+                if (recording) { recognition.stop(); voiceBtn.style.color = ''; }
+            });
+
+            voiceBtn.addEventListener('mouseleave', () => {
+                if (recording) { recognition.stop(); voiceBtn.style.color = ''; }
+            });
+
+            recognition.onresult = (e) => {
+                userInput.value = e.results[0][0].transcript;
+                voiceBtn.style.color = '';
+                sendMessage();
+            };
+
+            recognition.onerror = () => { voiceBtn.style.color = ''; };
+        } else {
+            voiceBtn.style.opacity = '0.3';
+        }
+
+        // Events
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        });
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
+
+        newChatBtn.addEventListener('click', newChat);
+
+        settingsToggle.addEventListener('click', () => settingsOverlay.classList.toggle('open'));
+        closeSettings.addEventListener('click', () => settingsOverlay.classList.remove('open'));
+        settingsOverlay.addEventListener('click', (e) => {
+            if (e.target === settingsOverlay) settingsOverlay.classList.remove('open');
+        });
+
+        themeSelect.addEventListener('change', (e) => {
+            document.body.classList.toggle('dark', e.target.value === 'dark');
+            localStorage.setItem('nodata_theme', e.target.value);
+        });
+
+        accentPicker.addEventListener('input', (e) => {
+            const color = e.target.value;
+            document.documentElement.style.setProperty('--accent', color);
+            document.querySelectorAll('.new-chat-btn, .send-btn, .msg-user').forEach(el => {
+                el.style.background = color;
+            });
+            localStorage.setItem('nodata_accent', color);
+        });
+
+        personalitySelect.addEventListener('change', (e) => {
+            ai.setPersonality(e.target.value);
+            localStorage.setItem('nodata_personality', e.target.value);
+        });
+
+        clearChatBtn.addEventListener('click', clearCurrentChat);
+        clearAllChatsBtn.addEventListener('click', clearAllChats);
+
+        function loadSettings() {
+            const theme = localStorage.getItem('nodata_theme') || 'light';
+            themeSelect.value = theme;
+            if (theme === 'dark') document.body.classList.add('dark');
+
+            const accent = localStorage.getItem('nodata_accent') || '#4a6cf7';
+            accentPicker.value = accent;
+            document.documentElement.style.setProperty('--accent', accent);
+
+            const personality = localStorage.getItem('nodata_personality') || 'friendly';
+            personalitySelect.value = personality;
+            ai.setPersonality(personality);
+
+            renderChatList();
+            const current = chats.find(c => c.id === currentChatId);
+            if (current) {
+                messages = current.messages || [];
+                chatTitle.textContent = current.title || 'Chat';
+            } else {
+                messages = [];
+                chatTitle.textContent = 'Start chatting';
+            }
+            renderMessages();
+        }
+
+        loadSettings();
+        userInput.focus();
+
+        console.log('NoDataAI ready - Smart Wikipedia search with relevance checking');
+        console.log('Try asking: "What is USA?" or "Who made Roblox?"');
+    </script>
+</body>
+</html>
