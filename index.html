@@ -46,6 +46,7 @@
             box-shadow: 0 4px 24px rgba(0,0,0,0.3);
         }
 
+        /* SIDEBAR - Desktop Only */
         .sidebar {
             width: 260px;
             background: #f8f9fb;
@@ -1028,13 +1029,151 @@
             animation: slideIn 0.3s;
         }
 
+        /* ===== MOBILE SIDEBAR (Slide-in) ===== */
+        .sidebar-mobile {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: #f8f9fb;
+            border-right: 1px solid #eaeef2;
+            padding: 20px 14px;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+            z-index: 60;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            border-radius: 24px 0 0 24px;
+        }
+
+        body.dark .sidebar-mobile {
+            background: #1a2238;
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .sidebar-mobile.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-mobile .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eaeef2;
+            margin-bottom: 10px;
+        }
+
+        body.dark .sidebar-mobile .logo {
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .sidebar-mobile .logo .icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            background: linear-gradient(135deg, #4a6cf7, #6d8cff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 2px 12px rgba(74,108,247,0.2);
+        }
+
+        .sidebar-mobile .logo .icon .icon-text {
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar-mobile .logo .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-mobile .logo .logo-text h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1e2b;
+            letter-spacing: -0.3px;
+        }
+
+        body.dark .sidebar-mobile .logo .logo-text h2 {
+            color: #edf2fa;
+        }
+
+        .sidebar-mobile .logo .logo-text small {
+            font-size: 10px;
+            font-weight: 400;
+            color: #8e96ab;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-mobile .new-chat-btn {
+            background: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-mobile .new-chat-btn:hover {
+            background: #3a5cd9;
+            transform: scale(0.98);
+        }
+
+        .sidebar-mobile .section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8e96ab;
+            padding: 6px 4px 4px;
+        }
+
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 55;
+            border-radius: 24px;
+        }
+
+        .mobile-overlay.open {
+            display: block;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
+            /* Hide desktop sidebar on mobile */
             .sidebar {
-                display: none;
+                display: none !important;
+            }
+            
+            /* Show mobile sidebar */
+            .sidebar-mobile {
+                display: flex !important;
             }
             
             .mobile-menu-btn {
-                display: flex;
+                display: flex !important;
             }
 
             .app {
@@ -1066,134 +1205,25 @@
             .chat-header .title .status {
                 display: none;
             }
+        }
 
+        @media (min-width: 769px) {
+            /* Show desktop sidebar on desktop */
+            .sidebar {
+                display: flex !important;
+            }
+            
+            /* Hide mobile sidebar on desktop */
             .sidebar-mobile {
-                display: flex;
-                position: absolute;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                width: 280px;
-                background: #f8f9fb;
-                border-right: 1px solid #eaeef2;
-                padding: 20px 14px;
-                flex-direction: column;
-                gap: 6px;
-                overflow-y: auto;
-                z-index: 60;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                box-shadow: 4px 0 20px rgba(0,0,0,0.1);
-                border-radius: 24px 0 0 24px;
+                display: none !important;
             }
-
-            body.dark .sidebar-mobile {
-                background: #1a2238;
-                border-color: rgba(255,255,255,0.06);
+            
+            .mobile-menu-btn {
+                display: none !important;
             }
-
-            .sidebar-mobile.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-mobile .logo {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding-bottom: 16px;
-                border-bottom: 1px solid #eaeef2;
-                margin-bottom: 10px;
-            }
-
-            body.dark .sidebar-mobile .logo {
-                border-color: rgba(255,255,255,0.06);
-            }
-
-            .sidebar-mobile .logo .icon {
-                width: 40px;
-                height: 40px;
-                min-width: 40px;
-                background: linear-gradient(135deg, #4a6cf7, #6d8cff);
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-weight: 700;
-                font-size: 14px;
-                box-shadow: 0 2px 12px rgba(74,108,247,0.2);
-            }
-
-            .sidebar-mobile .logo .icon .icon-text {
-                letter-spacing: -0.5px;
-            }
-
-            .sidebar-mobile .logo .logo-text {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .sidebar-mobile .logo .logo-text h2 {
-                font-size: 16px;
-                font-weight: 700;
-                color: #1a1e2b;
-                letter-spacing: -0.3px;
-            }
-
-            body.dark .sidebar-mobile .logo .logo-text h2 {
-                color: #edf2fa;
-            }
-
-            .sidebar-mobile .logo .logo-text small {
-                font-size: 10px;
-                font-weight: 400;
-                color: #8e96ab;
-                letter-spacing: 0.3px;
-                text-transform: uppercase;
-            }
-
-            .sidebar-mobile .new-chat-btn {
-                background: #4a6cf7;
-                color: white;
-                border: none;
-                padding: 10px;
-                border-radius: 10px;
-                font-weight: 600;
-                font-size: 14px;
-                cursor: pointer;
-                transition: 0.2s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                margin-bottom: 8px;
-            }
-
-            .sidebar-mobile .new-chat-btn:hover {
-                background: #3a5cd9;
-                transform: scale(0.98);
-            }
-
-            .sidebar-mobile .section-title {
-                font-size: 10px;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                color: #8e96ab;
-                padding: 6px 4px 4px;
-            }
-
+            
             .mobile-overlay {
-                display: none;
-                position: absolute;
-                inset: 0;
-                background: rgba(0,0,0,0.3);
-                z-index: 55;
-                border-radius: 24px;
-            }
-
-            .mobile-overlay.open {
-                display: block;
+                display: none !important;
             }
         }
 
@@ -1228,7 +1258,7 @@
 </head>
 <body>
     <div class="app" id="app">
-        <!-- Mobile Sidebar -->
+        <!-- Mobile Sidebar (slide-in) -->
         <div class="mobile-overlay" id="mobileOverlay"></div>
         <div class="sidebar-mobile" id="sidebarMobile">
             <div class="logo">
@@ -1377,7 +1407,7 @@
 
     <script>
         // ============================================================
-        // AI ENGINE WITH IMAGE GENERATION - MULTIPLE FALLBACKS
+        // AI ENGINE WITH IMAGE GENERATION
         // ============================================================
         class AIEngine {
             constructor() {
@@ -1387,7 +1417,6 @@
                 this.greetings = ['Hello! How can I help you today?', 'Hi there! What would you like to know?', 'Hey! I\'m ready to help.'];
                 this.farewells = ['Goodbye! Come back anytime.', 'See you later!', 'Take care!'];
                 this.thanks = ['You\'re welcome!', 'Happy to help!', 'Anytime!'];
-                this.imageAttempts = 0;
             }
 
             setImageMode(enabled) {
@@ -1494,34 +1523,23 @@
                 const cleanPrompt = prompt.replace(/[^a-zA-Z0-9, ]/g, '').trim();
                 const encodedPrompt = encodeURIComponent(cleanPrompt);
                 
-                // Try multiple image generation services
                 const services = [
-                    // Pollinations AI (primary)
                     `https://pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true&seed=${Date.now()}`,
-                    // Pollinations with different parameter order
                     `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true&seed=${Date.now()}`,
-                    // Pollinations with seed removed
                     `https://pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`,
-                    // Pollinations with different format
                     `https://pollinations.ai/prompt/${encodedPrompt}`
                 ];
 
-                // Try each service until one works
                 for (let i = 0; i < services.length; i++) {
-                    const url = services[i];
                     try {
-                        // Test if the URL is accessible
-                        const response = await fetch(url, { method: 'HEAD', mode: 'cors' });
+                        const response = await fetch(services[i], { method: 'HEAD', mode: 'cors' });
                         if (response.ok || response.status === 200) {
-                            return url;
+                            return services[i];
                         }
                     } catch (e) {
-                        // Service failed, try next one
                         continue;
                     }
                 }
-
-                // If all services fail, return the primary URL anyway (it might still work)
                 return services[0];
             }
 
@@ -1683,15 +1701,24 @@
         function openMobileMenu() {
             sidebarMobile.classList.add('open');
             mobileOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeMobileMenu() {
             sidebarMobile.classList.remove('open');
             mobileOverlay.classList.remove('open');
+            document.body.style.overflow = '';
         }
 
         mobileMenuBtn.addEventListener('click', openMobileMenu);
         mobileOverlay.addEventListener('click', closeMobileMenu);
+
+        // Close mobile menu on window resize (fixes rotation glitch)
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeMobileMenu();
+            }
+        });
 
         function saveState() {
             localStorage.setItem('nodata_messages', JSON.stringify(messages));
@@ -1815,7 +1842,6 @@
                     // Show generated image if present
                     if (msg.isGenerated && msg.image) {
                         content += `<div class="generating-indicator"><div class="spinner"></div><div class="text">Creating your image<span class="dots"></span></div></div>`;
-                        // Load image after a delay
                         setTimeout(() => {
                             const img = document.createElement('img');
                             img.src = msg.image;
@@ -1834,11 +1860,9 @@
                                 }
                             };
                             img.onerror = function() {
-                                // Try loading the image with a cache buster
                                 const fallbackUrl = msg.image + '&t=' + Date.now();
                                 this.src = fallbackUrl;
                                 this.onerror = function() {
-                                    // If all fails, show the error message
                                     this.style.display = 'none';
                                     const container = div.querySelector('.generating-indicator');
                                     if (container) {
@@ -1885,7 +1909,6 @@
             }
             messagesEl.scrollTop = messagesEl.scrollHeight;
             
-            // Download button for images
             document.querySelectorAll('.download-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const imageUrl = this.dataset.image;
@@ -1896,14 +1919,12 @@
                 });
             });
 
-            // Retry button for images
             document.querySelectorAll('.retry-btn').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const prompt = this.dataset.prompt;
                     const index = parseInt(this.dataset.index);
                     if (prompt && messages[index]) {
                         const msg = messages[index];
-                        // Try multiple URL formats for retry
                         const newImageUrl = await ai.generateImageWithFallback(prompt);
                         msg.image = newImageUrl;
                         msg.text = `AI Generated: ${prompt}`;
@@ -2116,7 +2137,7 @@
         loadSettings();
         userInput.focus();
 
-        console.log('NoDataAI ready - Image Mode with multiple fallback services!');
+        console.log('NoDataAI ready - Fixed mobile sidebar glitch!');
         console.log('Toggle "Image Mode" to create AI-generated images!');
         console.log('Made by The Rewan Team');
     </script>
