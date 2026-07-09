@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>NoDataAI · Smart Search</title>
+    <title>NoDataAI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -67,7 +67,7 @@
         .sidebar .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             padding-bottom: 16px;
             border-bottom: 1px solid #eaeef2;
             margin-bottom: 10px;
@@ -78,33 +78,51 @@
         }
 
         .sidebar .logo .icon {
-            width: 36px;
-            height: 36px;
-            background: #4a6cf7;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            background: linear-gradient(135deg, #4a6cf7, #6d8cff);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
+            box-shadow: 0 2px 12px rgba(74,108,247,0.2);
+            transition: transform 0.3s ease;
         }
 
-        .sidebar .logo h2 {
+        .sidebar .logo .icon:hover {
+            transform: rotate(-5deg) scale(1.05);
+        }
+
+        .sidebar .logo .icon .icon-text {
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar .logo .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar .logo .logo-text h2 {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             color: #1a1e2b;
+            letter-spacing: -0.3px;
         }
 
-        body.dark .sidebar .logo h2 {
+        body.dark .sidebar .logo .logo-text h2 {
             color: #edf2fa;
         }
 
-        .sidebar .logo h2 small {
-            font-size: 11px;
+        .sidebar .logo .logo-text small {
+            font-size: 10px;
             font-weight: 400;
             color: #8e96ab;
-            display: block;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
         }
 
         .new-chat-btn {
@@ -229,6 +247,30 @@
             color: #8e96ab;
         }
 
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #1a1e2b;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: 0.15s;
+        }
+
+        body.dark .mobile-menu-btn {
+            color: #edf2fa;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(0,0,0,0.04);
+        }
+
+        body.dark .mobile-menu-btn:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
         .chat-header-actions {
             display: flex;
             gap: 2px;
@@ -277,13 +319,6 @@
             text-align: center;
             color: #8e96ab;
             padding: 60px 20px;
-        }
-
-        .empty-state .icon-wrapper {
-            font-size: 40px;
-            color: #4a6cf7;
-            opacity: 0.3;
-            margin-bottom: 12px;
         }
 
         .empty-state h3 {
@@ -363,11 +398,71 @@
 
         .msg-ai .wiki-image {
             max-width: 100%;
-            max-height: 160px;
+            max-height: 200px;
             border-radius: 8px;
             margin-top: 8px;
             display: block;
             border: 1px solid rgba(0,0,0,0.04);
+            object-fit: contain;
+        }
+
+        .msg-ai .generated-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 12px;
+            margin-top: 8px;
+            display: block;
+            border: 2px solid rgba(74,108,247,0.15);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            object-fit: contain;
+            background: #f8f9fb;
+        }
+
+        .msg-ai .image-label {
+            display: inline-block;
+            font-size: 11px;
+            color: #8e96ab;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .generating-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+        }
+
+        .generating-indicator .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #eaeef2;
+            border-top: 3px solid #4a6cf7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .generating-indicator .text {
+            font-size: 13px;
+            color: #8e96ab;
+        }
+
+        .generating-indicator .dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
         }
 
         .code-block {
@@ -496,42 +591,12 @@
             30% { transform: translateY(-6px); }
         }
 
-        .quick-replies {
-            display: flex;
-            gap: 6px;
-            padding: 4px 24px 8px;
-            flex-wrap: wrap;
-            flex-shrink: 0;
-        }
-
-        .quick-reply {
-            background: transparent;
-            border: 1px solid #eaeef2;
-            padding: 4px 12px;
-            border-radius: 14px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.15s;
-            color: #6b7b9e;
-        }
-
-        body.dark .quick-reply {
-            border-color: rgba(255,255,255,0.08);
-            color: #99a8c9;
-        }
-
-        .quick-reply:hover {
-            background: #4a6cf7;
-            color: white;
-            border-color: #4a6cf7;
-        }
-
         .input-bar {
             padding: 10px 24px 16px;
             border-top: 1px solid #eaeef2;
             display: flex;
-            gap: 10px;
-            align-items: flex-end;
+            flex-direction: column;
+            gap: 8px;
             flex-shrink: 0;
             background: #ffffff;
         }
@@ -539,6 +604,12 @@
         body.dark .input-bar {
             background: #161c2e;
             border-color: rgba(255,255,255,0.06);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
         }
 
         .input-wrapper {
@@ -626,6 +697,71 @@
         .input-actions .send-btn:hover {
             background: #3a5cd9;
             transform: scale(0.94);
+        }
+
+        .image-mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            gap: 12px;
+        }
+
+        .image-mode-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 2px solid #eaeef2;
+            background: transparent;
+            color: #8e96ab;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        body.dark .image-mode-btn {
+            border-color: rgba(255,255,255,0.08);
+            color: #99a8c9;
+        }
+
+        .image-mode-btn:hover {
+            border-color: #4a6cf7;
+            color: #4a6cf7;
+        }
+
+        .image-mode-btn.active {
+            border-color: #4a6cf7;
+            background: rgba(74,108,247,0.08);
+            color: #4a6cf7;
+        }
+
+        .image-mode-btn .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8e96ab;
+            transition: 0.2s;
+        }
+
+        .image-mode-btn.active .indicator {
+            background: #4a6cf7;
+            box-shadow: 0 0 8px rgba(74,108,247,0.3);
+        }
+
+        .image-mode-status {
+            font-size: 11px;
+            color: #8e96ab;
+        }
+
+        body.dark .image-mode-status {
+            color: #99a8c9;
+        }
+
+        .image-mode-status.active {
+            color: #4a6cf7;
         }
 
         .settings-overlay {
@@ -737,6 +873,136 @@
             background: #eaeef2;
         }
 
+        .btn-about {
+            background: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .btn-about:hover {
+            background: #3a5cd9;
+            transform: scale(0.98);
+        }
+
+        .about-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            border-radius: 24px;
+        }
+
+        .about-overlay.open {
+            display: flex;
+        }
+
+        .about-card {
+            background: #ffffff;
+            max-width: 500px;
+            width: 90%;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        body.dark .about-card {
+            background: #1a2238;
+            color: #edf2fa;
+        }
+
+        .about-card .about-icon {
+            font-size: 60px;
+            color: #4a6cf7;
+            margin-bottom: 16px;
+        }
+
+        .about-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1e2b;
+        }
+
+        body.dark .about-card h2 {
+            color: #edf2fa;
+        }
+
+        .about-card .version {
+            color: #8e96ab;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .about-card .about-divider {
+            border: none;
+            border-top: 1px solid #eaeef2;
+            margin: 16px 0;
+        }
+
+        body.dark .about-card .about-divider {
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .about-card .about-text {
+            text-align: left;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #3d4559;
+        }
+
+        body.dark .about-card .about-text {
+            color: #99a8c9;
+        }
+
+        .about-card .about-text strong {
+            color: #4a6cf7;
+        }
+
+        .about-card .about-footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #eaeef2;
+            font-size: 12px;
+            color: #8e96ab;
+        }
+
+        body.dark .about-card .about-footer {
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .about-card .close-about-btn {
+            background: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 16px;
+            transition: 0.2s;
+        }
+
+        .about-card .close-about-btn:hover {
+            background: #3a5cd9;
+            transform: scale(0.98);
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -766,28 +1032,168 @@
             .sidebar {
                 display: none;
             }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+
             .app {
                 height: 96vh;
                 max-height: none;
                 border-radius: 16px;
             }
+            
             .msg {
                 max-width: 92%;
             }
+            
             .messages {
                 padding: 14px 14px 8px;
             }
-            .quick-replies {
-                padding: 4px 14px 8px;
-            }
+            
             .input-bar {
                 padding: 8px 14px 14px;
             }
+            
             .chat-header {
                 padding: 12px 16px;
             }
+            
             .chat-header .title {
                 font-size: 14px;
+            }
+
+            .chat-header .title .status {
+                display: none;
+            }
+
+            .sidebar-mobile {
+                display: flex;
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 280px;
+                background: #f8f9fb;
+                border-right: 1px solid #eaeef2;
+                padding: 20px 14px;
+                flex-direction: column;
+                gap: 6px;
+                overflow-y: auto;
+                z-index: 60;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+                border-radius: 24px 0 0 24px;
+            }
+
+            body.dark .sidebar-mobile {
+                background: #1a2238;
+                border-color: rgba(255,255,255,0.06);
+            }
+
+            .sidebar-mobile.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-mobile .logo {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid #eaeef2;
+                margin-bottom: 10px;
+            }
+
+            body.dark .sidebar-mobile .logo {
+                border-color: rgba(255,255,255,0.06);
+            }
+
+            .sidebar-mobile .logo .icon {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                background: linear-gradient(135deg, #4a6cf7, #6d8cff);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 700;
+                font-size: 14px;
+                box-shadow: 0 2px 12px rgba(74,108,247,0.2);
+            }
+
+            .sidebar-mobile .logo .icon .icon-text {
+                letter-spacing: -0.5px;
+            }
+
+            .sidebar-mobile .logo .logo-text {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .sidebar-mobile .logo .logo-text h2 {
+                font-size: 16px;
+                font-weight: 700;
+                color: #1a1e2b;
+                letter-spacing: -0.3px;
+            }
+
+            body.dark .sidebar-mobile .logo .logo-text h2 {
+                color: #edf2fa;
+            }
+
+            .sidebar-mobile .logo .logo-text small {
+                font-size: 10px;
+                font-weight: 400;
+                color: #8e96ab;
+                letter-spacing: 0.3px;
+                text-transform: uppercase;
+            }
+
+            .sidebar-mobile .new-chat-btn {
+                background: #4a6cf7;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                transition: 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+
+            .sidebar-mobile .new-chat-btn:hover {
+                background: #3a5cd9;
+                transform: scale(0.98);
+            }
+
+            .sidebar-mobile .section-title {
+                font-size: 10px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #8e96ab;
+                padding: 6px 4px 4px;
+            }
+
+            .mobile-overlay {
+                display: none;
+                position: absolute;
+                inset: 0;
+                background: rgba(0,0,0,0.3);
+                z-index: 55;
+                border-radius: 24px;
+            }
+
+            .mobile-overlay.open {
+                display: block;
             }
         }
 
@@ -795,26 +1201,58 @@
             body {
                 padding: 8px;
             }
+            
             .msg {
                 font-size: 13px;
                 padding: 10px 14px;
             }
-            .quick-reply {
-                font-size: 11px;
-                padding: 3px 10px;
-            }
+            
             .empty-state h3 {
                 font-size: 16px;
+            }
+            
+            .about-card {
+                padding: 20px;
+            }
+
+            .sidebar-mobile {
+                width: 260px;
+            }
+
+            .image-mode-btn {
+                font-size: 12px;
+                padding: 4px 12px;
             }
         }
     </style>
 </head>
 <body>
     <div class="app" id="app">
-        <div class="sidebar">
+        <!-- Mobile Sidebar -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        <div class="sidebar-mobile" id="sidebarMobile">
             <div class="logo">
-                <div class="icon">∅</div>
-                <h2>NoDataAI <small>Smart Search</small></h2>
+                <div class="icon"><span class="icon-text">ND</span></div>
+                <div class="logo-text">
+                    <h2>NoDataAI</h2>
+                    <small>Smart Search</small>
+                </div>
+            </div>
+            <button class="new-chat-btn" id="newChatBtnMobile">
+                <i class="fas fa-plus"></i> New Chat
+            </button>
+            <div class="section-title">Recent</div>
+            <div id="chatListMobile"></div>
+        </div>
+
+        <!-- Desktop Sidebar -->
+        <div class="sidebar" id="sidebarDesktop">
+            <div class="logo">
+                <div class="icon"><span class="icon-text">ND</span></div>
+                <div class="logo-text">
+                    <h2>NoDataAI</h2>
+                    <small>Smart Search</small>
+                </div>
             </div>
             <button class="new-chat-btn" id="newChatBtn">
                 <i class="fas fa-plus"></i> New Chat
@@ -823,9 +1261,11 @@
             <div id="chatList"></div>
         </div>
 
+        <!-- Main Chat -->
         <div class="main-chat">
             <div class="chat-header">
                 <div class="title">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
                     <i class="fas fa-comment" style="color:#4a6cf7;font-size:14px;"></i>
                     <span id="chatTitle">Start chatting</span>
                     <span class="status">· online</span>
@@ -838,18 +1278,26 @@
 
             <div class="messages" id="messages"></div>
 
-            <div class="quick-replies" id="quickReplies"></div>
-
             <div class="input-bar">
-                <div class="input-wrapper">
-                    <textarea id="userInput" rows="1" placeholder="Ask anything..."></textarea>
-                    <div class="input-actions">
-                        <button id="sendBtn" class="send-btn"><i class="fas fa-arrow-up"></i></button>
+                <div class="image-mode-toggle">
+                    <button class="image-mode-btn" id="imageModeBtn">
+                        <span class="indicator"></span>
+                        <span>Image Mode</span>
+                    </button>
+                    <span class="image-mode-status" id="imageModeStatus">Off</span>
+                </div>
+                <div class="input-row">
+                    <div class="input-wrapper">
+                        <textarea id="userInput" rows="1" placeholder="Ask anything..."></textarea>
+                        <div class="input-actions">
+                            <button id="sendBtn" class="send-btn"><i class="fas fa-arrow-up"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Settings -->
         <div class="settings-overlay" id="settingsOverlay">
             <div class="settings-card">
                 <h3>Settings</h3>
@@ -879,8 +1327,48 @@
                     <button class="btn-danger" id="clearAllChatsBtn" style="background:#c0392b;">Clear All</button>
                 </div>
                 <div class="setting-row">
+                    <button class="btn-about" id="aboutBtn"><i class="fas fa-info-circle"></i> About NoDataAI</button>
+                </div>
+                <div class="setting-row">
                     <button class="btn-secondary" id="closeSettings">Close</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- About Modal -->
+        <div class="about-overlay" id="aboutOverlay">
+            <div class="about-card">
+                <div class="about-icon">ND</div>
+                <h2>NoDataAI</h2>
+                <span class="version">Version 2.0</span>
+                <hr class="about-divider">
+                <div class="about-text">
+                    <p><strong>Made by The Rewan Team</strong></p>
+                    <br>
+                    <p><strong>Privacy Policy:</strong></p>
+                    <p>• NoDataAI does NOT collect, store, or sell your personal data.</p>
+                    <p>• All conversations stay on your device (local storage).</p>
+                    <p>• No cookies are used for tracking.</p>
+                    <p>• Wikipedia and DuckDuckGo searches are done anonymously.</p>
+                    <br>
+                    <p><strong>About:</strong></p>
+                    <p>NoDataAI is a privacy-first AI assistant that searches Wikipedia and DuckDuckGo to provide accurate information without collecting your data.</p>
+                    <br>
+                    <p><strong>Features:</strong></p>
+                    <p>• Wikipedia & DuckDuckGo search</p>
+                    <p>• AI Art Generation (Pollinations AI)</p>
+                    <p>• Code examples (Python, Lua, JavaScript)</p>
+                    <p>• Voice input support</p>
+                    <p>• Dark/Light mode</p>
+                    <p>• Chat history saved locally</p>
+                    <br>
+                    <p><strong>Made with love by The Rewan Team</strong></p>
+                </div>
+                <hr class="about-divider">
+                <div class="about-footer">
+                    © 2026 The Rewan Team. All rights reserved.
+                </div>
+                <button class="close-about-btn" id="closeAboutBtn">Close</button>
             </div>
         </div>
 
@@ -889,364 +1377,210 @@
 
     <script>
         // ============================================================
-        // SMART AI ENGINE - Clean Wikipedia Search
+        // AI ENGINE WITH IMAGE GENERATION - MULTIPLE FALLBACKS
         // ============================================================
         class AIEngine {
             constructor() {
                 this.personality = 'friendly';
                 this.context = [];
-                this.greetings = [
-                    'Hello! How can I help you today?',
-                    'Hi there! What would you like to know?',
-                    'Hey! I\'m ready to help with any questions.',
-                    'Greetings! How can I assist you?'
-                ];
-                this.farewells = [
-                    'Goodbye! Feel free to come back anytime.',
-                    'See you later! Take care.',
-                    'Until next time!'
-                ];
-                this.thanks = [
-                    'You\'re welcome!',
-                    'Happy to help!',
-                    'Anytime!'
-                ];
+                this.isImageMode = false;
+                this.greetings = ['Hello! How can I help you today?', 'Hi there! What would you like to know?', 'Hey! I\'m ready to help.'];
+                this.farewells = ['Goodbye! Come back anytime.', 'See you later!', 'Take care!'];
+                this.thanks = ['You\'re welcome!', 'Happy to help!', 'Anytime!'];
+                this.imageAttempts = 0;
+            }
+
+            setImageMode(enabled) {
+                this.isImageMode = enabled;
             }
 
             async process(input) {
                 const lower = input.toLowerCase().trim();
-                
-                // Store context
                 this.context.push(input);
                 if (this.context.length > 10) this.context.shift();
 
-                // About NoDataAI - keep this one
-                if (lower.includes('who made you') || lower.includes('who created you') || lower.includes('who built you')) {
-                    return { 
-                        reply: "NoDataAI was created by a small independent team focused on privacy and data protection. The AI uses Wikipedia and DuckDuckGo search to provide accurate information without collecting or storing your personal data. All conversations stay on your device.",
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
+                // Image Mode - Generate Image
+                if (this.isImageMode) {
+                    const imagePrompt = this.extractImagePrompt(input);
+                    if (imagePrompt && imagePrompt.length > 3) {
+                        const imageUrl = await this.generateImageWithFallback(imagePrompt);
+                        return { 
+                            reply: `Generating: ${imagePrompt}`,
+                            image: imageUrl,
+                            isGenerated: true,
+                            imagePrompt: imagePrompt,
+                            link: null, 
+                            code: null 
+                        };
+                    } else {
+                        return { 
+                            reply: "Image Mode is ON. Describe what you want to create. Example: 'A car on a road'",
+                            image: null, 
+                            link: null, 
+                            code: null, 
+                            isGenerated: false,
+                            imagePrompt: null
+                        };
+                    }
+                }
+
+                // About
+                if (lower.includes('who made you') || lower.includes('who created you')) {
+                    return { reply: "NoDataAI was created by The Rewan Team. We're a small independent team focused on privacy and data protection. All conversations stay on your device.", image: null, link: null, code: null, isGenerated: false };
                 }
                 
-                if (lower.includes('why is the name') || lower.includes('why are you called') || lower.includes('nodataai name') || lower.includes('meaning of name') || lower.includes('why nodataai')) {
-                    return { 
-                        reply: "The name NoDataAI reflects our core mission: we do not collect, store, or sell your personal data. Your conversations remain private and local on your device. Privacy isn't just a feature - it's the foundation of everything we do.",
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
+                if (lower.includes('why is the name') || lower.includes('why are you called') || lower.includes('why nodataai')) {
+                    return { reply: "The name NoDataAI reflects our core mission: we do not collect, store, or sell your personal data. Privacy isn't just a feature - it's our foundation. Made by The Rewan Team.", image: null, link: null, code: null, isGenerated: false };
+                }
+
+                if (lower.includes('privacy policy') || lower.includes('policy')) {
+                    return { reply: "NoDataAI Privacy Policy:\n\n• NoDataAI does NOT collect, store, or sell your personal data.\n• All conversations stay on your device (local storage).\n• No cookies are used for tracking.\n• Wikipedia and DuckDuckGo searches are done anonymously.\n\nMade with love by The Rewan Team", image: null, link: null, code: null, isGenerated: false };
                 }
 
                 // Greetings
-                if (lower.match(/^(hello|hi|hey|howdy|greetings|good morning|good evening|good afternoon|yo|sup|what's up)/)) {
-                    return { 
-                        reply: this.greetings[Math.floor(Math.random() * this.greetings.length)],
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
+                if (lower.match(/^(hello|hi|hey|howdy|greetings|good morning|good evening)/)) {
+                    return { reply: this.greetings[Math.floor(Math.random() * this.greetings.length)], image: null, link: null, code: null, isGenerated: false };
                 }
 
-                // Farewells
-                if (lower.match(/^(bye|goodbye|cya|see you|see ya|later|peace|adios)/)) {
-                    return { 
-                        reply: this.farewells[Math.floor(Math.random() * this.farewells.length)],
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
+                if (lower.match(/^(bye|goodbye|see you)/)) {
+                    return { reply: this.farewells[Math.floor(Math.random() * this.farewells.length)], image: null, link: null, code: null, isGenerated: false };
                 }
 
-                // Thanks
-                if (lower.match(/thank|thanks|appreciate|thx|ty/)) {
-                    return { 
-                        reply: this.thanks[Math.floor(Math.random() * this.thanks.length)],
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
+                if (lower.match(/thank|thanks/)) {
+                    return { reply: this.thanks[Math.floor(Math.random() * this.thanks.length)], image: null, link: null, code: null, isGenerated: false };
                 }
 
-                // Weather
-                if (lower.includes('weather') || lower.includes('temperature') || lower.includes('forecast')) {
-                    return { 
-                        reply: "Weather data requires internet access and is not available in offline mode. For current weather conditions, please check a weather service or enable internet access.",
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
+                if (lower.includes('weather')) {
+                    return { reply: "Weather data requires internet access. Please check a weather service for current conditions.", image: null, link: null, code: null, isGenerated: false };
                 }
 
-                // Time
-                if (lower.includes('time') || lower.includes('date') || lower.includes('what day')) {
+                if (lower.includes('time') || lower.includes('date')) {
                     const now = new Date();
-                    return { 
-                        reply: now.toLocaleString('en-US', { 
-                            weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }),
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
+                    return { reply: now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }), image: null, link: null, code: null, isGenerated: false };
                 }
 
-                // Calculations
-                if (lower.match(/[0-9\+\-\*\/\(\)]/) || lower.includes('calc') || lower.includes('calculate')) {
+                if (lower.match(/[0-9\+\-\*\/\(\)]/) || lower.includes('calc')) {
                     try {
                         let expr = input.replace(/calc|calculate|math|what is|equals|=/gi, '').trim();
-                        expr = expr.replace(/plus/g, '+')
-                                   .replace(/minus/g, '-')
-                                   .replace(/times/g, '*')
-                                   .replace(/divided by/g, '/')
-                                   .replace(/x/g, '*')
-                                   .replace(/÷/g, '/')
-                                   .replace(/−/g, '-');
-                        
-                        if (!/^[\d+\-*/().\s]+$/.test(expr)) {
-                            throw new Error('Invalid expression');
-                        }
-                        
+                        expr = expr.replace(/plus/g, '+').replace(/minus/g, '-').replace(/times/g, '*').replace(/divided by/g, '/').replace(/x/g, '*').replace(/÷/g, '/');
+                        if (!/^[\d+\-*/().\s]+$/.test(expr)) throw new Error('Invalid');
                         const result = Function('"use strict"; return (' + expr + ')')();
-                        return { 
-                            reply: `${expr} = ${result}`,
-                            image: null, 
-                            link: null, 
-                            code: null 
-                        };
+                        return { reply: `${expr} = ${result}`, image: null, link: null, code: null, isGenerated: false };
                     } catch(e) {
-                        return { 
-                            reply: "I couldn't calculate that. Try something like '2 + 2' or '10 * 5'",
-                            image: null, 
-                            link: null, 
-                            code: null 
-                        };
+                        return { reply: "Try something like '2 + 2' or '10 * 5'", image: null, link: null, code: null, isGenerated: false };
                     }
                 }
 
-                // Code requests
-                if (lower.includes('code') || lower.includes('script') || lower.includes('example') || 
-                    lower.includes('python') || lower.includes('lua') || lower.includes('javascript') ||
-                    lower.includes('function') || lower.includes('how to') || lower.includes('programming') ||
-                    lower.includes('syntax') || lower.includes('write a')) {
+                if (lower.includes('code') || lower.includes('script') || lower.includes('example') || lower.includes('python') || lower.includes('lua') || lower.includes('javascript')) {
                     const codeResult = this.getCodeExample(input);
-                    if (codeResult) {
-                        return { 
-                            reply: codeResult.explanation, 
-                            image: null, 
-                            link: null, 
-                            code: codeResult.code 
-                        };
-                    }
+                    if (codeResult) return { reply: codeResult.explanation, image: null, link: null, code: codeResult.code, isGenerated: false };
                 }
 
-                // Extract the main topic from the question
                 const topic = this.extractTopic(input);
-                if (!topic) {
-                    return { 
-                        reply: "I couldn't understand what you're asking. Could you rephrase your question?",
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
-                }
+                if (!topic) return { reply: "Could you rephrase your question?", image: null, link: null, code: null, isGenerated: false };
 
-                // Search Wikipedia
                 const wikiResult = await this.searchWikipedia(topic);
                 if (wikiResult && wikiResult.summary && wikiResult.summary.length > 20) {
-                    // Verify the result matches the query
-                    const isRelevant = this.isResultRelevant(topic, wikiResult.title, wikiResult.summary);
-                    if (isRelevant) {
-                        return { 
-                            reply: wikiResult.summary, 
-                            image: wikiResult.image, 
-                            link: wikiResult.link, 
-                            code: null 
-                        };
+                    return { reply: wikiResult.summary, image: wikiResult.image, link: wikiResult.link, code: null, isGenerated: false };
+                }
+
+                const ddgResult = await this.searchDuckDuckGo(topic);
+                if (ddgResult && ddgResult.length > 20) return { reply: ddgResult, image: null, link: null, code: null, isGenerated: false };
+
+                return { reply: "I couldn't find information about that. Try being more specific.", image: null, link: null, code: null, isGenerated: false };
+            }
+
+            async generateImageWithFallback(prompt) {
+                const cleanPrompt = prompt.replace(/[^a-zA-Z0-9, ]/g, '').trim();
+                const encodedPrompt = encodeURIComponent(cleanPrompt);
+                
+                // Try multiple image generation services
+                const services = [
+                    // Pollinations AI (primary)
+                    `https://pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true&seed=${Date.now()}`,
+                    // Pollinations with different parameter order
+                    `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true&seed=${Date.now()}`,
+                    // Pollinations with seed removed
+                    `https://pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`,
+                    // Pollinations with different format
+                    `https://pollinations.ai/prompt/${encodedPrompt}`
+                ];
+
+                // Try each service until one works
+                for (let i = 0; i < services.length; i++) {
+                    const url = services[i];
+                    try {
+                        // Test if the URL is accessible
+                        const response = await fetch(url, { method: 'HEAD', mode: 'cors' });
+                        if (response.ok || response.status === 200) {
+                            return url;
+                        }
+                    } catch (e) {
+                        // Service failed, try next one
+                        continue;
                     }
                 }
 
-                // Try DuckDuckGo
-                const ddgResult = await this.searchDuckDuckGo(topic);
-                if (ddgResult && ddgResult.length > 20) {
-                    return { 
-                        reply: ddgResult, 
-                        image: null, 
-                        link: null, 
-                        code: null 
-                    };
-                }
+                // If all services fail, return the primary URL anyway (it might still work)
+                return services[0];
+            }
 
-                return { 
-                    reply: "I couldn't find reliable information about that. Try being more specific or rephrasing your question.",
-                    image: null, 
-                    link: null, 
-                    code: null 
-                };
+            extractImagePrompt(input) {
+                let prompt = input
+                    .replace(/generate|create|make|draw|image|picture|art|render|produce|show me|give me|i want|can you|please|of|a|an/gi, '')
+                    .replace(/[?,.]/g, '')
+                    .trim();
+                if (prompt.length < 3) {
+                    prompt = input.replace(/generate|create|make|draw|image|picture|art|render|produce|show me|give me|i want|can you|please/gi, '').trim();
+                }
+                if (!prompt || prompt.length < 2) {
+                    prompt = input.trim();
+                }
+                return prompt;
             }
 
             extractTopic(query) {
-                // Remove common question starters
-                let topic = query
-                    .replace(/^what is\s+|^who is\s+|^what are\s+|^who are\s+|^what does\s+|^where is\s+|^when is\s+|^how to\s+|^how do\s+|^define\s+|^tell me about\s+|^information about\s+|^can you tell me about\s+/gi, '')
-                    .replace(/[?,.]/g, '')
-                    .trim();
-                
-                // If the topic is too short or empty, use the original query
-                if (!topic || topic.length < 2) {
-                    topic = query.replace(/[?,.]/g, '').trim();
-                }
-                
+                let topic = query.replace(/^what is\s+|^who is\s+|^what are\s+|^who are\s+|^what does\s+|^where is\s+|^when is\s+|^how to\s+|^how do\s+|^define\s+|^tell me about\s+/gi, '').replace(/[?,.]/g, '').trim();
+                if (!topic || topic.length < 2) topic = query.replace(/[?,.]/g, '').trim();
                 return topic;
-            }
-
-            isResultRelevant(query, title, summary) {
-                // Check if the title or summary contains the query or related terms
-                const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 3);
-                const titleLower = title.toLowerCase();
-                const summaryLower = summary.toLowerCase();
-                
-                // Check if any significant word from the query appears in the title
-                for (const word of queryWords) {
-                    if (titleLower.includes(word)) {
-                        return true;
-                    }
-                }
-                
-                // Check if the summary mentions the query
-                for (const word of queryWords) {
-                    if (summaryLower.includes(word)) {
-                        return true;
-                    }
-                }
-                
-                // If the title is very similar to the query, it's relevant
-                const titleWords = titleLower.split(' ');
-                let matchCount = 0;
-                for (const word of queryWords) {
-                    if (titleWords.some(tw => tw.includes(word) || word.includes(tw))) {
-                        matchCount++;
-                    }
-                }
-                
-                return matchCount >= Math.min(2, queryWords.length);
             }
 
             getCodeExample(query) {
                 const lower = query.toLowerCase();
-                let code = null;
-                let explanation = '';
-
+                let code, explanation;
                 if (lower.includes('lua') || lower.includes('roblox')) {
-                    code = `-- Roblox Lua Script Example
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
--- Create a tool
-local tool = Instance.new("Tool")
-tool.Name = "MyTool"
-tool.RequiresHandle = true
-
--- Tool activation
-tool.Activated:Connect(function()
-    print("Tool used!")
-end)
-
--- Equip the tool
-tool.Parent = player.Backpack`;
+                    code = `-- Roblox Lua Script\nlocal Players = game:GetService("Players")\nlocal player = Players.LocalPlayer\nlocal tool = Instance.new("Tool")\ntool.Name = "MyTool"\ntool.RequiresHandle = true\ntool.Activated:Connect(function()\n    print("Tool used!")\nend)\ntool.Parent = player.Backpack`;
                     explanation = 'Lua script for Roblox:';
                 } else if (lower.includes('python')) {
-                    code = `# Python Example
-def hello_world():
-    print("Hello, World!")
-
-def add_numbers(a, b):
-    return a + b
-
-# Main execution
-if __name__ == "__main__":
-    hello_world()
-    result = add_numbers(5, 3)
-    print(f"Sum: {result}")`;
+                    code = `# Python Example\ndef hello_world():\n    print("Hello, World!")\ndef add_numbers(a, b):\n    return a + b\nif __name__ == "__main__":\n    hello_world()\n    result = add_numbers(5, 3)\n    print(f"Sum: {result}")`;
                     explanation = 'Python code example:';
                 } else if (lower.includes('javascript') || lower.includes('js')) {
-                    code = `// JavaScript Example
-async function fetchData(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network error');
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error:', error);
-        return null;
-    }
-}
-
-// Usage
-fetchData('https://api.example.com/data')
-    .then(data => console.log(data));`;
+                    code = `// JavaScript Example\nasync function fetchData(url) {\n    try {\n        const response = await fetch(url);\n        const data = await response.json();\n        return data;\n    } catch (error) {\n        console.error('Error:', error);\n    }\n}\nfetchData('https://api.example.com/data')\n    .then(data => console.log(data));`;
                     explanation = 'JavaScript example:';
                 } else {
-                    code = `# Generic Example
-def main():
-    print("Hello, World!")
-    return 0
-
-if __name__ == "__main__":
-    main()`;
+                    code = `# Generic Example\ndef main():\n    print("Hello, World!")\n    return 0\nif __name__ == "__main__":\n    main()`;
                     explanation = 'Code example:';
                 }
-
                 return { explanation, code };
             }
 
             async searchWikipedia(query) {
                 try {
-                    // Clean the query
-                    let cleanQuery = query.trim();
-                    
-                    // Try direct page first
-                    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanQuery)}`;
+                    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
                     const response = await fetch(url);
-                    
                     if (response.ok) {
                         const data = await response.json();
                         if (data && data.extract && data.extract.length > 20) {
                             let summary = data.extract;
                             if (summary.length > 600) summary = summary.substring(0, 600) + '...';
-                            return {
-                                summary: summary,
-                                image: data.thumbnail ? data.thumbnail.source : null,
-                                link: `https://en.wikipedia.org/wiki/${encodeURIComponent(data.title || cleanQuery)}`,
-                                title: data.title || cleanQuery
-                            };
+                            return { summary, image: data.thumbnail ? data.thumbnail.source : null, link: `https://en.wikipedia.org/wiki/${encodeURIComponent(data.title || query)}`, title: data.title || query };
                         }
                     }
-
-                    // Try search
-                    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*`;
+                    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`;
                     const searchResponse = await fetch(searchUrl);
                     const searchData = await searchResponse.json();
-                    
                     if (searchData.query && searchData.query.search && searchData.query.search.length > 0) {
-                        // Sort by relevance (higher score first)
-                        const sortedResults = searchData.query.search.sort((a, b) => b.score - a.score);
-                        
-                        // Filter out disambiguation pages
-                        const filteredResults = sortedResults.filter(r => 
-                            !r.snippet.includes('may refer to') && 
-                            !r.title.includes('disambiguation') &&
-                            !r.title.includes('(disambiguation)')
-                        );
-                        
-                        const bestResult = filteredResults.length > 0 ? filteredResults[0] : sortedResults[0];
+                        const bestResult = searchData.query.search[0];
                         if (bestResult && bestResult.title) {
                             const detailUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(bestResult.title)}`;
                             const detailResponse = await fetch(detailUrl);
@@ -1255,33 +1589,13 @@ if __name__ == "__main__":
                                 if (data && data.extract && data.extract.length > 20) {
                                     let summary = data.extract;
                                     if (summary.length > 600) summary = summary.substring(0, 600) + '...';
-                                    return {
-                                        summary: summary,
-                                        image: data.thumbnail ? data.thumbnail.source : null,
-                                        link: `https://en.wikipedia.org/wiki/${encodeURIComponent(data.title || bestResult.title)}`,
-                                        title: data.title || bestResult.title
-                                    };
+                                    return { summary, image: data.thumbnail ? data.thumbnail.source : null, link: `https://en.wikipedia.org/wiki/${encodeURIComponent(data.title || bestResult.title)}`, title: data.title || bestResult.title };
                                 }
-                            }
-                            
-                            // Fallback to snippet
-                            let snippet = bestResult.snippet.replace(/<[^>]*>/g, '').trim();
-                            if (snippet.length > 20) {
-                                return {
-                                    summary: snippet + '...',
-                                    image: null,
-                                    link: `https://en.wikipedia.org/wiki/${encodeURIComponent(bestResult.title)}`,
-                                    title: bestResult.title
-                                };
                             }
                         }
                     }
-                    
                     return null;
-                } catch (error) {
-                    console.error('Wikipedia search error:', error);
-                    return null;
-                }
+                } catch (error) { console.error('Wikipedia error:', error); return null; }
             }
 
             async searchDuckDuckGo(query) {
@@ -1289,13 +1603,11 @@ if __name__ == "__main__":
                     const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
                     const response = await fetch(url);
                     const data = await response.json();
-                    
                     if (data && data.AbstractText && data.AbstractText.length > 20) {
                         let text = data.AbstractText;
                         if (text.length > 600) text = text.substring(0, 600) + '...';
                         return text;
                     }
-                    
                     if (data && data.RelatedTopics && data.RelatedTopics.length > 0) {
                         for (const topic of data.RelatedTopics) {
                             if (topic.Text && topic.Text.length > 20) {
@@ -1305,12 +1617,8 @@ if __name__ == "__main__":
                             }
                         }
                     }
-                    
                     return null;
-                } catch (error) {
-                    console.error('DuckDuckGo search error:', error);
-                    return null;
-                }
+                } catch (error) { console.error('DuckDuckGo error:', error); return null; }
             }
 
             setPersonality(p) { this.personality = p; }
@@ -1334,16 +1642,56 @@ if __name__ == "__main__":
         const clearChatBtn = document.getElementById('clearChatBtn');
         const clearAllChatsBtn = document.getElementById('clearAllChatsBtn');
         const newChatBtn = document.getElementById('newChatBtn');
+        const newChatBtnMobile = document.getElementById('newChatBtnMobile');
         const chatList = document.getElementById('chatList');
+        const chatListMobile = document.getElementById('chatListMobile');
         const chatTitle = document.getElementById('chatTitle');
         const toast = document.getElementById('toast');
-        const quickReplies = document.getElementById('quickReplies');
+        const aboutBtn = document.getElementById('aboutBtn');
+        const aboutOverlay = document.getElementById('aboutOverlay');
+        const closeAboutBtn = document.getElementById('closeAboutBtn');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebarMobile = document.getElementById('sidebarMobile');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const imageModeBtn = document.getElementById('imageModeBtn');
+        const imageModeStatus = document.getElementById('imageModeStatus');
 
         let messages = JSON.parse(localStorage.getItem('nodata_messages')) || [];
         let chats = JSON.parse(localStorage.getItem('nodata_chats')) || [];
         let currentChatId = localStorage.getItem('nodata_currentChat') || Date.now().toString();
         let isTyping = false;
         let currentSpeech = null;
+        let imageModeEnabled = false;
+
+        // Image Mode Toggle
+        imageModeBtn.addEventListener('click', function() {
+            imageModeEnabled = !imageModeEnabled;
+            ai.setImageMode(imageModeEnabled);
+            this.classList.toggle('active');
+            imageModeStatus.textContent = imageModeEnabled ? 'On' : 'Off';
+            imageModeStatus.classList.toggle('active', imageModeEnabled);
+            if (imageModeEnabled) {
+                toastMessage('Image Mode Activated. Describe what you want to create.');
+                userInput.placeholder = 'Describe the image you want to create...';
+            } else {
+                toastMessage('Image Mode Deactivated');
+                userInput.placeholder = 'Ask anything...';
+            }
+        });
+
+        // Mobile Menu
+        function openMobileMenu() {
+            sidebarMobile.classList.add('open');
+            mobileOverlay.classList.add('open');
+        }
+
+        function closeMobileMenu() {
+            sidebarMobile.classList.remove('open');
+            mobileOverlay.classList.remove('open');
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        mobileOverlay.addEventListener('click', closeMobileMenu);
 
         function saveState() {
             localStorage.setItem('nodata_messages', JSON.stringify(messages));
@@ -1360,6 +1708,7 @@ if __name__ == "__main__":
                 renderMessages();
                 saveState();
                 renderChatList();
+                closeMobileMenu();
             }
         }
 
@@ -1370,6 +1719,7 @@ if __name__ == "__main__":
             renderMessages();
             saveState();
             renderChatList();
+            closeMobileMenu();
         }
 
         function deleteChat(id) {
@@ -1403,53 +1753,46 @@ if __name__ == "__main__":
         }
 
         function renderChatList() {
-            chatList.innerHTML = '';
-            if (chats.length === 0) {
-                chatList.innerHTML = `<div style="color:#8e96ab;font-size:12px;padding:10px;text-align:center;">No chats yet</div>`;
-                return;
-            }
-            chats.slice(0, 15).forEach(chat => {
-                const div = document.createElement('div');
-                div.className = 'chat-list-item' + (chat.id === currentChatId ? ' active' : '');
-                div.innerHTML = `
-                    <i class="fas fa-comment" style="font-size:11px;"></i>
-                    <span>${chat.title || 'Untitled'}</span>
-                    <button class="trash" data-id="${chat.id}"><i class="fas fa-trash-alt"></i></button>
-                `;
-                div.addEventListener('click', () => loadChat(chat.id));
-                div.querySelector('.trash').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    deleteChat(chat.id);
+            const lists = [chatList, chatListMobile];
+            lists.forEach(list => {
+                list.innerHTML = '';
+                if (chats.length === 0) {
+                    list.innerHTML = `<div style="color:#8e96ab;font-size:12px;padding:10px;text-align:center;">No chats yet</div>`;
+                    return;
+                }
+                chats.slice(0, 15).forEach(chat => {
+                    const div = document.createElement('div');
+                    div.className = 'chat-list-item' + (chat.id === currentChatId ? ' active' : '');
+                    div.innerHTML = `
+                        <i class="fas fa-comment" style="font-size:11px;"></i>
+                        <span>${chat.title || 'Untitled'}</span>
+                        <button class="trash" data-id="${chat.id}"><i class="fas fa-trash-alt"></i></button>
+                    `;
+                    div.addEventListener('click', () => loadChat(chat.id));
+                    div.querySelector('.trash').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        deleteChat(chat.id);
+                    });
+                    list.appendChild(div);
                 });
-                chatList.appendChild(div);
             });
         }
 
         function renderCodeBlock(code) {
             const container = document.createElement('div');
             container.className = 'code-block';
-            
             const header = document.createElement('div');
             header.className = 'code-header';
-            header.innerHTML = `
-                <span class="lang">code</span>
-                <button class="copy-code-btn"><i class="fas fa-copy"></i> Copy</button>
-            `;
-            
+            header.innerHTML = `<span class="lang">code</span><button class="copy-code-btn"><i class="fas fa-copy"></i> Copy</button>`;
             const pre = document.createElement('pre');
             const codeEl = document.createElement('code');
             codeEl.textContent = code;
             pre.appendChild(codeEl);
-            
             container.appendChild(header);
             container.appendChild(pre);
-            
             header.querySelector('.copy-code-btn').addEventListener('click', function() {
-                navigator.clipboard.writeText(code).then(() => {
-                    toastMessage('Code copied!');
-                });
+                navigator.clipboard.writeText(code).then(() => toastMessage('Code copied!'));
             });
-            
             return container;
         }
 
@@ -1458,31 +1801,71 @@ if __name__ == "__main__":
             if (messages.length === 0) {
                 messagesEl.innerHTML = `
                     <div class="empty-state">
-                        <div class="icon-wrapper"><i class="fas fa-search"></i></div>
                         <h3>Ask me anything</h3>
-                        <p>Wikipedia search · privacy first</p>
+                        <p>Wikipedia search · AI Art Generation · privacy first</p>
+                        <p style="font-size:12px;opacity:0.5;margin-top:8px;">Toggle Image Mode to create images</p>
                     </div>
                 `;
             } else {
                 messages.forEach((msg, index) => {
                     const div = document.createElement('div');
                     div.className = `msg msg-${msg.role}`;
-                    
                     let content = msg.text;
+                    
+                    // Show generated image if present
+                    if (msg.isGenerated && msg.image) {
+                        content += `<div class="generating-indicator"><div class="spinner"></div><div class="text">Creating your image<span class="dots"></span></div></div>`;
+                        // Load image after a delay
+                        setTimeout(() => {
+                            const img = document.createElement('img');
+                            img.src = msg.image;
+                            img.className = 'generated-image';
+                            img.alt = msg.imagePrompt || 'AI Image';
+                            img.onload = function() {
+                                const container = div.querySelector('.generating-indicator');
+                                if (container) {
+                                    container.replaceWith(img);
+                                    const label = document.createElement('div');
+                                    label.className = 'image-label';
+                                    label.textContent = `AI Generated · ${msg.imagePrompt || 'Image'}`;
+                                    div.appendChild(label);
+                                    msg.text = `AI Generated: ${msg.imagePrompt}`;
+                                    saveState();
+                                }
+                            };
+                            img.onerror = function() {
+                                // Try loading the image with a cache buster
+                                const fallbackUrl = msg.image + '&t=' + Date.now();
+                                this.src = fallbackUrl;
+                                this.onerror = function() {
+                                    // If all fails, show the error message
+                                    this.style.display = 'none';
+                                    const container = div.querySelector('.generating-indicator');
+                                    if (container) {
+                                        const errorText = document.createElement('div');
+                                        errorText.className = 'image-label';
+                                        errorText.textContent = 'Could not generate image. Please retry.';
+                                        container.replaceWith(errorText);
+                                    }
+                                };
+                            };
+                        }, 1500);
+                    }
+                    
+                    // Show Wikipedia image
+                    if (!msg.isGenerated && msg.image) {
+                        content += `<img src="${msg.image}" class="wiki-image" onerror="this.style.display='none'">`;
+                    }
                     
                     if (msg.code) {
                         const codeContainer = renderCodeBlock(msg.code);
                         content += codeContainer.outerHTML;
                     }
                     
-                    if (msg.image) {
-                        content += `<img src="${msg.image}" class="wiki-image" onerror="this.style.display='none'">`;
-                    }
                     if (msg.link) {
                         content += `<a href="${msg.link}" target="_blank" class="wiki-link">Read more on Wikipedia →</a>`;
                     }
                     content += `<span class="time">${msg.time || new Date().toLocaleTimeString()}</span>`;
-                    
                     div.innerHTML = content;
                     
                     if (msg.role === 'ai') {
@@ -1491,6 +1874,8 @@ if __name__ == "__main__":
                         actions.innerHTML = `
                             <button class="speak-btn" data-index="${index}"><i class="fas fa-volume-up"></i> Speak</button>
                             <button class="copy-btn" data-text="${msg.text}"><i class="fas fa-copy"></i> Copy</button>
+                            ${msg.isGenerated && msg.image ? `<button class="download-btn" data-image="${msg.image}"><i class="fas fa-download"></i> Save</button>` : ''}
+                            ${msg.isGenerated && msg.image ? `<button class="retry-btn" data-prompt="${msg.imagePrompt}" data-index="${index}"><i class="fas fa-sync"></i> Retry</button>` : ''}
                         `;
                         div.appendChild(actions);
                     }
@@ -1499,7 +1884,35 @@ if __name__ == "__main__":
                 });
             }
             messagesEl.scrollTop = messagesEl.scrollHeight;
-            updateQuickReplies();
+            
+            // Download button for images
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const imageUrl = this.dataset.image;
+                    if (imageUrl) {
+                        window.open(imageUrl, '_blank');
+                        toastMessage('Opening image in new tab...');
+                    }
+                });
+            });
+
+            // Retry button for images
+            document.querySelectorAll('.retry-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const prompt = this.dataset.prompt;
+                    const index = parseInt(this.dataset.index);
+                    if (prompt && messages[index]) {
+                        const msg = messages[index];
+                        // Try multiple URL formats for retry
+                        const newImageUrl = await ai.generateImageWithFallback(prompt);
+                        msg.image = newImageUrl;
+                        msg.text = `AI Generated: ${prompt}`;
+                        saveState();
+                        renderMessages();
+                        toastMessage('Regenerating your image...');
+                    }
+                });
+            });
             
             document.querySelectorAll('.speak-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -1510,17 +1923,14 @@ if __name__ == "__main__":
             
             document.querySelectorAll('.copy-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    navigator.clipboard.writeText(this.dataset.text).then(() => {
-                        toastMessage('Copied!');
-                    });
+                    navigator.clipboard.writeText(this.dataset.text).then(() => toastMessage('Copied!'));
                 });
             });
         }
 
-        function addMessage(role, text, image = null, link = null, code = null) {
+        function addMessage(role, text, image = null, link = null, code = null, isGenerated = false, imagePrompt = null) {
             const time = new Date().toLocaleTimeString();
-            messages.push({ role, text, time, image, link, code });
-            
+            messages.push({ role, text, time, image, link, code, isGenerated, imagePrompt });
             const existing = chats.find(c => c.id === currentChatId);
             if (existing) {
                 existing.messages = messages;
@@ -1554,23 +1964,24 @@ if __name__ == "__main__":
         async function getAIResponse(input) {
             if (isTyping) return;
             isTyping = true;
-            
             const typing = document.createElement('div');
             typing.className = 'typing';
             typing.innerHTML = '<span></span><span></span><span></span>';
             messagesEl.appendChild(typing);
             messagesEl.scrollTop = messagesEl.scrollHeight;
-
             try {
                 const result = await ai.process(input);
                 typing.remove();
-                addMessage('ai', result.reply, result.image || null, result.link || null, result.code || null);
+                if (result.isGenerated && result.image) {
+                    addMessage('ai', `Creating image: ${result.imagePrompt}`, result.image, null, null, true, result.imagePrompt);
+                } else {
+                    addMessage('ai', result.reply, result.image || null, result.link || null, result.code || null, false, null);
+                }
             } catch (error) {
                 typing.remove();
                 addMessage('ai', 'Sorry, I encountered an error. Please try again.');
                 console.error('AI Error:', error);
             }
-            
             isTyping = false;
         }
 
@@ -1581,31 +1992,16 @@ if __name__ == "__main__":
                     currentSpeech = null;
                     document.querySelectorAll('.speak-btn').forEach(b => b.classList.remove('active'));
                 }
-                
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 0.9;
                 utterance.onstart = () => { if (button) button.classList.add('active'); };
                 utterance.onend = () => { if (button) button.classList.remove('active'); currentSpeech = null; };
                 utterance.onerror = () => { if (button) button.classList.remove('active'); currentSpeech = null; };
-                
                 currentSpeech = utterance;
                 window.speechSynthesis.speak(utterance);
             } else {
                 toastMessage('Text-to-speech not supported');
             }
-        }
-
-        function updateQuickReplies() {
-            const suggestions = ['Hello', 'What is AI?', 'Python example', 'Lua script', 'Weather', 'Time', '15 + 27', 'Who made you?', 'Why NoDataAI?'];
-            quickReplies.innerHTML = suggestions.map(s =>
-                `<span class="quick-reply" data-text="${s}">${s}</span>`
-            ).join('');
-            document.querySelectorAll('.quick-reply').forEach(el => {
-                el.addEventListener('click', () => {
-                    userInput.value = el.dataset.text;
-                    sendMessage();
-                });
-            });
         }
 
         function toastMessage(msg) {
@@ -1621,27 +2017,22 @@ if __name__ == "__main__":
             recognition.lang = 'en-US';
             recognition.interimResults = false;
             let recording = false;
-
             voiceBtn.addEventListener('mousedown', () => {
                 recording = true;
                 recognition.start();
                 voiceBtn.style.color = '#e74c6f';
             });
-
             voiceBtn.addEventListener('mouseup', () => {
                 if (recording) { recognition.stop(); voiceBtn.style.color = ''; }
             });
-
             voiceBtn.addEventListener('mouseleave', () => {
                 if (recording) { recognition.stop(); voiceBtn.style.color = ''; }
             });
-
             recognition.onresult = (e) => {
                 userInput.value = e.results[0][0].transcript;
                 voiceBtn.style.color = '';
                 sendMessage();
             };
-
             recognition.onerror = () => { voiceBtn.style.color = ''; };
         } else {
             voiceBtn.style.opacity = '0.3';
@@ -1658,11 +2049,21 @@ if __name__ == "__main__":
         });
 
         newChatBtn.addEventListener('click', newChat);
+        newChatBtnMobile.addEventListener('click', newChat);
 
         settingsToggle.addEventListener('click', () => settingsOverlay.classList.toggle('open'));
         closeSettings.addEventListener('click', () => settingsOverlay.classList.remove('open'));
         settingsOverlay.addEventListener('click', (e) => {
             if (e.target === settingsOverlay) settingsOverlay.classList.remove('open');
+        });
+
+        aboutBtn.addEventListener('click', () => {
+            settingsOverlay.classList.remove('open');
+            aboutOverlay.classList.add('open');
+        });
+        closeAboutBtn.addEventListener('click', () => aboutOverlay.classList.remove('open'));
+        aboutOverlay.addEventListener('click', (e) => {
+            if (e.target === aboutOverlay) aboutOverlay.classList.remove('open');
         });
 
         themeSelect.addEventListener('change', (e) => {
@@ -1673,7 +2074,7 @@ if __name__ == "__main__":
         accentPicker.addEventListener('input', (e) => {
             const color = e.target.value;
             document.documentElement.style.setProperty('--accent', color);
-            document.querySelectorAll('.new-chat-btn, .send-btn, .msg-user').forEach(el => {
+            document.querySelectorAll('.new-chat-btn, .send-btn, .msg-user, .btn-about, .sidebar .logo .icon, .sidebar-mobile .logo .icon').forEach(el => {
                 el.style.background = color;
             });
             localStorage.setItem('nodata_accent', color);
@@ -1715,8 +2116,9 @@ if __name__ == "__main__":
         loadSettings();
         userInput.focus();
 
-        console.log('NoDataAI ready - Smart Wikipedia search with relevance checking');
-        console.log('Try asking: "What is USA?" or "Who made Roblox?"');
+        console.log('NoDataAI ready - Image Mode with multiple fallback services!');
+        console.log('Toggle "Image Mode" to create AI-generated images!');
+        console.log('Made by The Rewan Team');
     </script>
 </body>
 </html>
